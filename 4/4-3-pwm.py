@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(24, GPIO.OUT)
 
-p=GPIO.PWM(24, 50)
+p=GPIO.PWM(24, 100)
 p.start(0)
 try:
     while True:
