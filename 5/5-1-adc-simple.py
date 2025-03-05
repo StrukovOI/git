@@ -7,30 +7,34 @@ dac = [8, 11, 7, 1, 0, 5, 12, 6]
 comp = 14
 troyka = 13
 GPIO.setup(dac, GPIO.OUT)
-GPIO.setup(troyka, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(troyka, GPIO.OUT, initial=GPIO.HIGH)
 GPIO.setup(comp, GPIO.IN)
 
 def dec(n):
     return [int(i) for i in bin(n)[2:].zfill(8)]
 
+def nd(value):
+    signal=dec(value)
+    GPIO.output(dac, signal)
 
 def adc():
-    a=0
-    for i in range(8):
-        a+=2**(7-i)
-        GPIO.output(dac, dec(a))
-        time.sleep(0.001)
-        if GPIO.input(comp)==0:
-            a-=2**(7-i)
-    return a
+    for val in range(256):
+        nd(val)
+        time.sleep(0.01)
+        if GPIO.input(comp)==1:
+            volt = val / 256 * 3.3
+
+            print("Цифровое значение: {:3d}, Напряжение: {:.2f}В".format(val, volt))
+            break
+
 
 try:
-    GPIO.output(troyka, GPIO.HIGH)
     while True:
-        b=adc()
-        volt = b / 256 * 3.3
-        print("Цифровое значение: {:3d}, Напряжение: {:.2f}В".format(b, volt))
-        time.sleep(0.5)
+        adc()
+        #adc()
+        #volt = b / 256 * 3.3
+        #print("Цифровое значение: {:3d}, Напряжение: {:.2f}В".format(b, volt))
+       
 except KeyboardInterrupt:
     print('Программа остановлена')
 finally:
