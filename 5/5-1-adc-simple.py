@@ -18,22 +18,22 @@ def nd(value):
     GPIO.output(dac, signal)
 
 def adc():
-    for val in range(256):
-        nd(val)
-        time.sleep(0.01)
-        if GPIO.input(comp)==1:
-            volt = val / 256 * 3.3
-
-            print("Цифровое значение: {:3d}, Напряжение: {:.2f}В".format(val, volt))
-            break
+    val=0
+    for i in range(8):
+        bv=1<<(7-i)
+        val+=bv
+        GPIO.output(dac, dec(val))
+        time.sleep(0.001)
+        if GPIO.input(comp)==0:
+            val-=bv
+    return val
 
 
 try:
     while True:
-        adc()
-        #adc()
-        #volt = b / 256 * 3.3
-        #print("Цифровое значение: {:3d}, Напряжение: {:.2f}В".format(b, volt))
+        dv=adc()
+        volt = dv / 256 * 3.3
+        print("Цифровое значение: {:3d}, Напряжение: {:.2f}В".format(dv, volt))
        
 except KeyboardInterrupt:
     print('Программа остановлена')
