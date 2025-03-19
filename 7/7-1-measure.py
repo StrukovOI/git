@@ -23,7 +23,7 @@ def adc():
     for i in range(8):
         value+=2**(7-i)
         GPIO.output(dac, dec(value))
-        time.sleep(0.001)
+        time.sleep(0.0007)
         if GPIO.input(comp)==1:
             value-=(2**(7-i))
     return round(value*0.012890625, 4)
@@ -31,7 +31,7 @@ def adc():
 
 def bin_leds():
     
-        dv=adc()*256
+        dv=adc()/0.012890625
         if dv<28:
             GPIO.output(leds, [0]*8)
         elif dv<57:
