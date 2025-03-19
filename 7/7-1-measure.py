@@ -56,18 +56,28 @@ def measure():
     meas=[]
     GPIO.output(troyka, GPIO.HIGH)
     start=time.time()
-    while adc()!=2.475:
-        meas.append(adc())
-        bin_leds()
-        print(meas)
+    flag=True
+    while flag:
+        a=adc()
+        if a!=3.1969:
+            meas.append(adc())
+        else:
+            flag=False
+        
+        #bin_leds()
+        #print(meas)
     meas.append(adc())
     GPIO.output(dac, GPIO.LOW)
     GPIO.output(troyka, GPIO.LOW)
-    while adc()>0.06445:
-        meas.append(adc())
-        bin_leds()
-        print(meas)
-    meas.append(adc())
+    while not flag:
+        a=adc()
+        if a!=0.1934:
+            meas.append(a)
+        else:
+            flag=True
+        #bin_leds()
+        #print(meas)
+    meas.append(a)
     end=time.time()
     GPIO.cleanup()
     zeit=end-start
